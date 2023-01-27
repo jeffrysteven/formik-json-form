@@ -1,62 +1,63 @@
-import Head from 'next/head';
-import {Anchor} from '@twilio-paste/core/anchor';
-import {Heading} from '@twilio-paste/core/heading';
-import {Box} from '@twilio-paste/core/box';
-import {Paragraph} from '@twilio-paste/core/paragraph';
-import {ListItem, UnorderedList} from '@twilio-paste/core/list';
-import {Separator} from '@twilio-paste/core/separator';
-import type {NextPage} from 'next';
+import { Box } from "@twilio-paste/core/box";
+import type { NextPage } from "next";
+import { Form, ComponentsMap, SubmitButton } from "../components/formElements";
 
 const Home: NextPage = () => {
+  const formSchema: any = {
+    name: {
+      type: "text",
+      label: "Name",
+      required: true,
+      name: "user_name",
+      placeholder: "User name",
+    },
+    lastname: {
+      type: "text",
+      label: "Last name",
+      name: "user_lastname",
+      required: true,
+      placeholder: "User last name",
+    },
+    email: {
+      type: "email",
+      label: "Email",
+      name: "user_email",
+      required: true,
+      placeholder: "User email",
+    },
+    ack: {
+      type: "checkbox",
+      label: "Acknowledge",
+      name: "user_ack",
+      required: true,
+      values: [
+        "Agree with twilio privacy",
+        "Agree with Short codes law",
+        "Agree with test"
+      ]
+    },
+  };
+
+  const onSubmit = (values: any, { setSubmitting }: any) => {
+    console.log(values);
+    setTimeout(() => setSubmitting(false), 1000); // Form states
+  };
+
   return (
     <Box as="main" padding="space70">
-      <Head>
-        <title>Paste NextJS App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Heading as="h1" variant="heading10">
-        Welcome to the the Paste Next.JS App!
-      </Heading>
-
-      <Paragraph>
-        Everything you need to get started using Paste in a Production app. Start by editing{' '}
-        <code>pages/index.tsx</code>
-      </Paragraph>
-      <Separator orientation="horizontal" verticalSpacing="space120" />
-
-      <Heading as="h2" variant="heading20">
-        Useful links
-      </Heading>
-
-      <UnorderedList>
-        <ListItem>
-          <Heading as="h3" variant="heading30">
-            <Anchor href="https://paste.twilio.design" showExternal>
-              Paste Documentation
-            </Anchor>
-          </Heading>
-          <Paragraph>
-            Start here. Find in-depth information about using the Paste Design System to build your Next app.
-          </Paragraph>
-        </ListItem>
-        <ListItem>
-          <Heading as="h3" variant="heading30">
-            <Anchor href="https://nextjs.org/docs" showExternal>
-              NextJS Documentation
-            </Anchor>
-          </Heading>
-          <Paragraph>Find in-depth information about Next.js features and API.</Paragraph>
-        </ListItem>
-        <ListItem>
-          <Heading as="h3" variant="heading30">
-            <Anchor href="https://vercel.com/import?filter=next.js" showExternal>
-              Deploy
-            </Anchor>
-          </Heading>
-          <Paragraph>Instantly deploy your Next.js site to a public URL with Vercel.</Paragraph>
-        </ListItem>
-      </UnorderedList>
+      <Form
+        onSubmit={onSubmit}
+        initialValues={{ user_email: "", user_lastname: "", user_name: "" }}
+      >
+        {Object.keys(formSchema).map((key) => {
+          const Cmp =
+            ComponentsMap[formSchema[key].type as keyof typeof ComponentsMap];
+          return <Cmp key={key} {...formSchema[key]} />;
+        })}
+        <SubmitButton variant="primary" type="submit">
+          Test Submit
+        </SubmitButton>
+      </Form>
     </Box>
   );
 };
